@@ -1,3 +1,4 @@
+const customError = require('../errorClass/customError');
 const User=require('../models/userModel');
 
 //get all users
@@ -10,16 +11,17 @@ const getUsers=async(req,res)=>{
  }
 }
 //get single user
-const getUser=async(req,res)=>{
+const getUser=async(req,res,next)=>{
     try {
          const user = await User.findById(req.params.id);
          if(!user){
-            return res.status(400).json({msg:'user not found'});
+           throw new customError('user not found',400)
          }
          res.json(user);
         
     } catch (error) {
-        res.status(500).json({msg:error.message});
+        next(error)
+        
     }
    
 
@@ -36,30 +38,31 @@ const crateUser=async(req,res)=>{
 }
 //update user
 
-const updateUser=async(req,res)=>{
+const updateUser=async(req,res,next)=>{
     try {
         const user=await User.findById(req.params.id);
         if(!user){
-            return res.status(400).json({msg:'user not found '});
+           throw new customError('user not found',400)
         }
         const updatedUser=await User.findByIdAndUpdate(req.params.id,req.body,{new:true});
         res.json(updatedUser);
+    }
+     catch (error) {
+        next(error)
         
-    } catch (error) {
-        res.status(500).json({msg:error.message});
     }
  
 }
-const deleteUser=async(req,res)=>{
+const deleteUser=async(req,res,next)=>{
    try {
     const user=await User.findById(req.params.id);
     if(!user){
-       return res.status(400).json({msg:'user not found'});
+      throw new customError('user not found',400)
     }
     await User.findByIdAndDelete(req.params.id);
      res.json({msg:'user deleted'});
    } catch (error) {
-    res.status(500).json({msg:error.message});
+    next(error)
    }
 }
 
