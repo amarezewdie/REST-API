@@ -4,12 +4,11 @@ const dotenv=require('dotenv').config();
 const userRoute=require('./routes/userRoute');
 
 const app=express();
-
 const port=process.env.PORT||8000;
+
 // builtin middleware
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
-
 //route handler middleware
 app.use('/api/users',userRoute);
 
